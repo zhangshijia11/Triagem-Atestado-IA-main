@@ -34,29 +34,6 @@
 * 病假超过 **15 天**：系统自动标记，建议申请**劳动能力鉴定**（依据《工伤保险条例》）
 * ICD-10 编码校验：确保提交的诊断编码在国际疾病分类标准中
 
----
-
-## 🚀 快速启动
-
-### 环境要求
-* Java JDK 17+
-* Maven（或使用项目自带的 `./mvnw`）
-
-### 启动步骤
-
-```bash
-# 1. 进入项目目录
-cd Triagem-Atestado-IA-main
-
-# 2. 配置 DeepSeek API Key
-#    编辑 src/main/resources/env.properties，填入你的 API Key：
-#    DEEPSEEK_API_KEY=你的key
-
-# 3. 启动应用
-./mvnw spring-boot:run
-```
-
-访问 **http://localhost:8080**
 
 ### 测试账号
 
