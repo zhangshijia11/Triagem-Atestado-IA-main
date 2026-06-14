@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职安通 - 企业管理看板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+    
+
+        <nav id="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-shield-halved me-2"></i> 职安通</div>
+        <div class="nav flex-column mt-4">
+            <a href="/portal-empresa/home" class="nav-link"><i class="fa-solid fa-house"></i> 首页</a>
+            <a href="/portal-empresa/funcionarios" class="nav-link"><i class="fa-solid fa-users"></i> 员工管理</a>
+            <a href="/portal-empresa" class="nav-link active"><i class="fa-solid fa-file-medical"></i> 病假条管理</a>
+            <a href="/portal-exames" class="nav-link"><i class="fa-solid fa-stethoscope"></i> 体检管理</a>
+            <a href="/portal-equipamentos" class="nav-link"><i class="fa-solid fa-helmet-safety"></i> 劳保管理</a>
+            <a href="/portal-empresa/riscos" class="nav-link"><i class="fa-solid fa-chart-line"></i> 职业风险评估</a>
+            <div class="mt-auto pb-4"><a href="/logout" class="nav-link text-danger"><i class="fa-solid fa-right-from-bracket"></i> 退出系统</a></div>
+        </div>
+    </nav>
+
+
+    <div id="content">
+        <div class="top-bar">
+            <div>
+                <h2 class="fw-bold mb-0">缺勤管理</h2>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="fw-bold" th:text="${session.usuarioLogado}">企业名称</div>
+                    <div class="small text-muted">角色：职业健康安全管理员</div>
+                </div>
+                <div class="rounded-circle bg-white p-2 shadow-sm">
+                    <img src="https://ui-avatars.com/api/?name=职安通&background=004080&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card kpi-card p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-bold">病假条总数</div>
+                            <div class="h3 fw-bold mt-1" th:text="${totalAtestados}">0</div>
+                        </div>
+                        <div class="kpi-icon bg-primary-subtle text-primary"><i class="fa-solid fa-file-waveform"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-bold">待审核</div>
+                            <div class="h3 fw-bold mt-1" th:text="${pendentes}">0</div>
+                        </div>
+                        <div class="kpi-icon bg-warning-subtle text-warning"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-bold">缺勤率</div>
+                            <div class="h3 fw-bold mt-1">2.4%</div>
+                        </div>
+                        <div class="kpi-icon bg-success-subtle text-success"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-bold">AI 识别病假单</div>
+                            <div class="h3 fw-bold mt-1" th:text="${totalAtestados}">0</div>
+                        </div>
+                        <div class="kpi-icon bg-info-subtle text-info"><i class="fa-solid fa-robot"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container table-responsive">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">智能审核队列</h5>
+                <span class="badge bg-danger" th:if="${pendentes > 0}" th:text="${pendentes + ' 条新病假单'}">0 条新病假单</span>
+            </div>
+
+            <div th:if="${sucessoAction}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm py-2" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i> <span th:text="${sucessoAction}">已通过</span>
+                <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${erroAction}" class="alert alert-danger alert-dismissible fade show border-0 shadow-sm py-2" role="alert">
+                <i class="fa-solid fa-circle-xmark me-2"></i> <span th:text="${erroAction}">已拒绝</span>
+                <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <table class="table table-hover align-middle mt-2">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">编号</th>
+                        <th class="text-center">员工</th>
+                        <th class="text-center">执业证号</th>
+                        <th class="text-center">CID</th>
+                        <th class="text-nowrap text-center">请假天数</th>
+                        <th class="col-observacao">备注</th>
+                        <th class="text-nowrap">提交日期</th>
+                        <th class="text-center">附件</th>
+                        <th class="text-center">状态</th>
+                        <th class="text-center">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <tr th:each="atestado : ${atestados}">
+                        <td class="text-muted fw-bold text-nowrap" th:text="${'#' + atestado.id}">#1</td>
+
+                        <td class="fw-bold text-nowrap" th:text="${atestado.funcionario.nome}">姓名</td>
+
+                        <td><span class="badge bg-light text-dark border" th:text="${atestado.crm}">执业证号</span></td>
+
+                        <td><span class="badge bg-secondary" th:text="${atestado.cid}">CID</span></td>
+
+                        <td class="text-nowrap text-center" th:text="${atestado.diasAfastamento + ' 天'}">0 天</td>
+
+                        <td>
+                            <small th:text="${atestado.resumoDiagnostico}"
+                                   th:class="${#strings.contains(atestado.resumoDiagnostico, '劳动能力鉴定') ? 'text-danger fw-bold' : 'text-muted'}">
+                                备注信息
+                            </small>
+                        </td>
+
+                        <td class="text-center" th:text="${#temporals.format(atestado.dataEnvio, 'yyyy/MM/dd')}">2026/01/01</td>
+
+                        <td class="text-center">
+                            <a th:if="${atestado.nomeArquivo != null}"
+                               th:href="@{/atestado/arquivo/{nome}(nome=${atestado.nomeArquivo})}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-primary"
+                               title="查看病假条照片">
+                                <i class="fa-solid fa-image"></i>
+                            </a>
+                            <span th:if="${atestado.nomeArquivo == null}" class="text-muted small">无照片</span>
+                        </td>
+
+                        <td>
+                            <span th:text="${atestado.status?.name() == 'PENDENTE' ? '待审核' : (atestado.status?.name() == 'APROVADO' ? '已通过' : '已拒绝')}"
+                                  th:class="${atestado.status?.name() == 'PENDENTE' ? 'status-badge bg-pending' : (atestado.status?.name() == 'APROVADO' ? 'status-badge bg-approved' : 'status-badge bg-danger-custom')}">
+                                待审核
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center" th:if="${atestado.status?.name() == 'PENDENTE'}">
+                                <form th:action="@{/atestado/aprovar/{id}(id=${atestado.id})}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-success" title="通过">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                </form>
+                                <form th:action="@{/atestado/recusar/{id}(id=${atestado.id})}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="拒绝">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div th:if="${atestado.status?.name() != 'PENDENTE'}" class="text-muted small fw-bold text-nowrap">
+                                <i class="fa-solid fa-lock me-1"></i> 已审核
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(atestados)}">
+                        <td colspan="10" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-folder-open mb-2" style="font-size: 2rem; opacity: 0.5;"></i><br>
+                            暂无待审核的病假条。
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxCid = document.getElementById('cidChart').getContext('2d');
+        new Chart(ctxCid, {
+            type: 'bar',
+            data: {
+                labels: ['M54.5', 'J06', 'Z73', 'S93', 'B34'],
+                datasets: [{
+                    label: '出现次数',
+                    data: [42, 28, 18, 12, 9],
+                    backgroundColor: '#0073e6',
+                    borderRadius: 5
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ['已通过', '待审核', '已拒绝'],
+                datasets: [{
+                    data: [85, 7, 8],
+                    backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
+                    hoverOffset: 4
+                }]
+            },
+            options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+        });
+    </script>
+</body>
+</html>

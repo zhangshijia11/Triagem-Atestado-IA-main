@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职安通 - 劳保管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+    
+
+        <nav id="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-shield-halved me-2"></i> 职安通</div>
+        <div class="nav flex-column mt-4">
+            <a href="/portal-empresa/home" class="nav-link"><i class="fa-solid fa-house"></i> 首页</a>
+            <a href="/portal-empresa/funcionarios" class="nav-link"><i class="fa-solid fa-users"></i> 员工管理</a>
+            <a href="/portal-empresa" class="nav-link"><i class="fa-solid fa-file-medical"></i> 病假条管理</a>
+            <a href="/portal-exames" class="nav-link"><i class="fa-solid fa-stethoscope"></i> 体检管理</a>
+            <a href="/portal-equipamentos" class="nav-link active"><i class="fa-solid fa-helmet-safety"></i> 劳保管理</a>
+            <a href="/portal-empresa/riscos" class="nav-link"><i class="fa-solid fa-chart-line"></i> 职业风险评估</a>
+            <div class="mt-auto pb-4"><a href="/logout" class="nav-link text-danger"><i class="fa-solid fa-right-from-bracket"></i> 退出系统</a></div>
+        </div>
+    </nav>
+
+
+    <div id="content">
+        <div class="top-bar">
+            <div>
+                <h2 class="fw-bold mb-0">劳保用品管理 (劳动防护)</h2>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end"><div class="fw-bold" th:text="${session.usuarioLogado}">企业名称</div><div class="small text-muted">角色：职业健康安全管理员</div></div>
+                <div class="rounded-circle bg-white p-2 shadow-sm"><img src="https://ui-avatars.com/api/?name=职安通&background=004080&color=fff" class="rounded-circle" width="40" alt="Avatar"></div>
+            </div>
+        </div>
+
+        <!-- 发放劳保用品表单 -->
+        <div class="card kpi-card p-4 mb-4">
+            <h5 class="fw-bold mb-3" style="color: #004080;"><i class="fa-solid fa-boxes-packing me-2"></i>发放劳保用品</h5>
+            <form th:action="@{/equipamento/entregar}" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-2"><label class="form-label small fw-bold">员工邮箱</label><input type="email" name="emailFuncionario" class="form-control" placeholder="zhangli@zhian.com" required></div>
+                    <div class="col-md-2"><label class="form-label small fw-bold">用品类型</label>
+                        <select name="tipo" class="form-select" required>
+                            <option value="">-- 请选择 --</option>
+                            <option value="CAPACETE">安全帽</option><option value="LUVAS">手套</option><option value="BOTAS">安全靴</option><option value="OCULOS">护目镜</option>
+                            <option value="PROTETOR_AURICULAR">护耳器</option><option value="MASCARA">口罩</option><option value="CINTO_SEGURANCA">安全带</option><option value="UNIFORME">工装</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2"><label class="form-label small fw-bold">数量</label><input type="number" name="quantidade" class="form-control" value="1" min="1" required></div>
+                    <div class="col-md-2"><label class="form-label small fw-bold">规格/型号</label><input type="text" name="especificacao" class="form-control" placeholder="CA-12345" required></div>
+                    <div class="col-md-2"><label class="form-label small fw-bold">有效期至</label><input type="date" name="dataValidade" class="form-control" required></div>
+                    <div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn w-100" style="background-color: #0073e6; color: white; font-weight: 600; border-radius: 8px;"><i class="fa-solid fa-paper-plane me-1"></i> 发放</button></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4"><div class="card kpi-card p-3"><div class="d-flex justify-content-between align-items-start"><div><div class="text-muted small fw-bold">用品总数</div><div class="h3 fw-bold mt-1" th:text="${totalEquipamentos}">0</div></div><div class="kpi-icon bg-primary-subtle text-primary"><i class="fa-solid fa-helmet-safety"></i></div></div></div></div>
+            <div class="col-md-4"><div class="card kpi-card p-3"><div class="d-flex justify-content-between align-items-start"><div><div class="text-muted small fw-bold">使用中</div><div class="h3 fw-bold mt-1" th:text="${entregues}">0</div></div><div class="kpi-icon bg-success-subtle text-success"><i class="fa-solid fa-check-circle"></i></div></div></div></div>
+            <div class="col-md-4"><div class="card kpi-card p-3"><div class="d-flex justify-content-between align-items-start"><div><div class="text-muted small fw-bold">待更换/已过期</div><div class="h3 fw-bold mt-1" th:text="${vencidos + devolvidos}">0</div></div><div class="kpi-icon bg-danger-subtle text-danger"><i class="fa-solid fa-triangle-exclamation"></i></div></div></div></div>
+        </div>
+
+        <!-- 管理队列 -->
+        <div class="table-container table-responsive">
+            <div class="d-flex justify-content-between align-items-center mb-4"><h5 class="fw-bold mb-0">劳保用品管理队列</h5><span class="badge bg-danger" th:if="${vencidos > 0}" th:text="${vencidos + ' 件已过期'}">0 件已过期</span></div>
+            <div th:if="${sucessoAction}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm py-2" role="alert"><i class="fa-solid fa-circle-check me-2"></i> <span th:text="${sucessoAction}">成功</span><button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button></div>
+            <div th:if="${erroAction}" class="alert alert-danger alert-dismissible fade show border-0 shadow-sm py-2" role="alert"><i class="fa-solid fa-circle-xmark me-2"></i> <span th:text="${erroAction}">错误</span><button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button></div>
+
+            <table class="table table-hover align-middle mt-2">
+                <thead class="table-light"><tr><th class="text-center">编号</th><th class="text-center">员工</th><th class="text-center">用品类型</th><th class="text-center">规格/型号</th><th class="text-center">数量</th><th class="text-center">发放日期</th><th class="text-center">有效期至</th><th class="text-center">归还日期</th><th class="text-center">更换理由</th><th class="text-center">状态</th><th class="text-center">操作</th></tr></thead>
+                <tbody>
+                    <tr th:each="epi : ${lista}">
+                        <td class="text-muted fw-bold text-nowrap" th:text="${'#' + epi.id}">#1</td>
+                        <td class="fw-bold text-nowrap" th:text="${epi.funcionario.nome}">姓名</td>
+                        <td class="text-center">
+                            <span th:switch="${epi.tipo?.name()}">
+                                <span th:case="'CAPACETE'" class="badge bg-light text-dark border">安全帽</span>
+                                <span th:case="'LUVAS'" class="badge bg-light text-dark border">手套</span>
+                                <span th:case="'BOTAS'" class="badge bg-light text-dark border">安全靴</span>
+                                <span th:case="'OCULOS'" class="badge bg-light text-dark border">护目镜</span>
+                                <span th:case="'PROTETOR_AURICULAR'" class="badge bg-light text-dark border">护耳器</span>
+                                <span th:case="'MASCARA'" class="badge bg-light text-dark border">口罩</span>
+                                <span th:case="'CINTO_SEGURANCA'" class="badge bg-light text-dark border">安全带</span>
+                                <span th:case="'UNIFORME'" class="badge bg-light text-dark border">工装</span>
+                            </span>
+                        </td>
+                        <td class="text-center" th:text="${epi.especificacao}">--</td>
+                        <td class="text-center" th:text="${epi.quantidade}">1</td>
+                        <td class="text-center" th:text="${#temporals.format(epi.dataEntrega, 'yyyy/MM/dd')}">--</td>
+                        <td class="text-center">
+                            <span th:if="${epi.dataValidade != null}" th:text="${#temporals.format(epi.dataValidade, 'yyyy/MM/dd')}" th:class="${epi.dataValidade.isBefore(T(java.time.LocalDate).now()) ? 'text-danger fw-bold' : ''}">--</span>
+                            <span th:if="${epi.dataValidade == null}" class="text-muted">--</span>
+                        </td>
+                        <td class="text-center"><span th:if="${epi.dataDevolucao != null}" th:text="${#temporals.format(epi.dataDevolucao, 'yyyy/MM/dd')}">--</span><span th:if="${epi.dataDevolucao == null}" class="text-muted">--</span></td>
+                        <td class="text-center">
+                            <small th:if="${epi.observacao != null}" th:text="${epi.observacao}" class="text-warning fw-bold"></small>
+                            <span th:if="${epi.observacao == null}" class="text-muted">--</span>
+                        </td>
+                        <td class="text-center">
+                            <span th:switch="${epi.status?.name()}">
+                                <span th:case="'ENTREGUE'" class="status-badge bg-pending">待签收</span>
+                                <span th:case="'EM_USO'" class="status-badge bg-approved">使用中</span>
+                                <span th:case="'DEVOLVIDO'" class="badge bg-warning text-dark">待处理</span>
+                                <span th:case="'VENCIDO'" class="status-badge bg-danger-custom">已过期</span>
+                                <span th:case="'RESOLVIDO'" class="badge bg-secondary">已处理</span>
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <!-- 已过期/待处理: 更换 -->
+                            <button th:if="${epi.status?.name() == 'VENCIDO' or epi.status?.name() == 'DEVOLVIDO'}"
+                                    class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#substituirModal"
+                                    th:attr="data-id=${epi.id},data-func=${epi.funcionario.nome},data-tipo=${epi.tipo?.name()},data-qtd=${epi.quantidade}">
+                                <i class="fa-solid fa-rotate me-1"></i>更换
+                            </button>
+                            <!-- 使用中/待签收: 无操作 -->
+                            <span th:if="${epi.status?.name() == 'ENTREGUE' or epi.status?.name() == 'EM_USO'}" class="text-muted small">--</span>
+                            <!-- 已处理: 终态 -->
+                            <span th:if="${epi.status?.name() == 'RESOLVIDO'}" class="text-muted small">--</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(lista)}">
+                        <td colspan="11" class="text-center text-muted py-4"><i class="fa-solid fa-folder-open mb-2" style="font-size: 2rem; opacity: 0.5;"></i><br>暂无劳保用品记录。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 更换用品弹窗 -->
+    <div class="modal fade" id="substituirModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header" style="background-color: #004080; color: white;">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-rotate me-2"></i>更换劳保用品</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="substituirForm" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">用品编号</label>
+                            <input type="text" class="form-control bg-light" id="modalEquipId" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">员工 / 类型 / 数量</label>
+                            <input type="text" class="form-control bg-light" id="modalEquipInfo" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">新规格/型号</label>
+                            <input type="text" name="especificacao" class="form-control" placeholder="例如：CA-12345" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">新有效期至</label>
+                            <input type="date" name="dataValidade" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-warning"><i class="fa-solid fa-rotate me-1"></i> 确认更换</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tipoMap = {
+            'CAPACETE':'安全帽','LUVAS':'手套','BOTAS':'安全靴','OCULOS':'护目镜',
+            'PROTETOR_AURICULAR':'护耳器','MASCARA':'口罩','CINTO_SEGURANCA':'安全带','UNIFORME':'工装'
+        };
+        document.getElementById('substituirModal').addEventListener('show.bs.modal', function(event) {
+            var btn = event.relatedTarget;
+            var id = btn.getAttribute('data-id');
+            var func = btn.getAttribute('data-func');
+            var tipo = btn.getAttribute('data-tipo');
+            var qtd = btn.getAttribute('data-qtd');
+            document.getElementById('modalEquipId').value = '#' + id;
+            document.getElementById('modalEquipInfo').value = func + ' / ' + (tipoMap[tipo] || tipo) + ' / ' + qtd + '件';
+            document.getElementById('substituirForm').action = '/equipamento/substituir/' + id;
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

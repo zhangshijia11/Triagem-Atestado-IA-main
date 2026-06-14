@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(java -version)",
+      "Bash(mvn -version)",
+      "Bash(./mvnw spring-boot:run)",
+      "Bash(./mvnw clean *)",
+      "Bash(export JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-17.0.19.10-hotspot\")",
+      "Bash(cd \"C:/Users/ASUS/Downloads/Triagem-Atestado-IA-main/Triagem-Atestado-IA-main\")",
+      "Bash(export GEMINI_API_KEY=\"test-dummy-key\")",
+      "Bash(true)",
+      "Bash(setx JAVA_HOME *)",
+      "Bash(curl *)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(taskkill //F //PID 28920)",
+      "Bash(sleep 2)",
+      "Bash(sed -i 's|<groupId>dev.langchain4j</groupId>|<!-- removed -->|' pom.xml)",
+      "Bash(sed -i '/<!-- removed -->/d' pom.xml)",
+      "Bash(sed -i '/^$/{ N; /^\\\\n$/d; }' pom.xml)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['id']\\) for m in data.get\\('data',[]\\)]\")",
+      "Bash(tesseract --version)",
+      "Bash(where tesseract *)",
+      "Bash(winget install *)",
+      "Bash(choco install *)",
+      "Bash(\"/c/Program Files/Tesseract-OCR/tesseract.exe\" --list-langs)",
+      "Bash(python3 -c ' *)",
+      "Bash(mkdir -p __TRACKED_VAR__/tessdata)",
+      "Bash(cp '/c/Program Files/Tesseract-OCR/tessdata/eng.traineddata' __TRACKED_VAR__/tessdata/)",
+      "Bash(sort -t/ -k3)",
+      "Bash(pip install *)",
+      "Bash(python3 *)",
+      "Bash(sed -i 's/Por favor, selecione um ficheiro válido./请选择一个有效的文件。/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/Atestado encaminhado com sucesso para a fila de triagem da empresa!/病假条已成功提交至企业审核队列！/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/Erro interno no servidor ao processar o documento. Tente novamente mais tarde./服务器处理文件时出错，请稍后重试。/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/Atestado processado com sucesso!/病假条处理成功！/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/Erro interno ao processar o texto./处理文本时出错。/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/public String receberTexto\\(/public String receberTexto\\(\\\\n            @RequestParam\\(value = \"anexo\", required = false\\) MultipartFile anexo,/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)",
+      "Bash(sed -i 's/atestadoService.processarTextoESalvarAtestado\\(textoAtestado, usuario\\);/atestadoService.processarTextoESalvarAtestado\\(textoAtestado, anexo, usuario\\);/g' src/main/java/br/com/soc/triagem_atestados/controller/AtestadoController.java)"
+    ]
+  }
+}

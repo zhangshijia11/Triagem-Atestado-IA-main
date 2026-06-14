@@ -1,0 +1,76 @@
+/* 文件: src/main/resources/static/css/exames.css */
+
+:root {
+    --zat-navy: #004080;
+    --zat-blue: #0073e6;
+    --bg-light: #f4f7f9;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--bg-light);
+}
+
+h1, h2, h3, h4, .navbar-brand {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar */
+.navbar-custom {
+    background-color: var(--zat-navy);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Welcome */
+.welcome-section {
+    background: linear-gradient(135deg, var(--zat-navy) 0%, #008080 100%);
+    color: white;
+    padding: 3rem 0 5rem 0;
+    margin-bottom: -3rem;
+}
+
+/* Cards */
+.service-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem auto;
+    background-color: rgba(0, 115, 230, 0.1);
+    color: var(--zat-blue);
+}
+
+.btn-custom {
+    background-color: var(--zat-blue);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    transition: 0.2s;
+}
+
+.btn-custom:hover {
+    background-color: var(--zat-navy);
+    color: white;
+}

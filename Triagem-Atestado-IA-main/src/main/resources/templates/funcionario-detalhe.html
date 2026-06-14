@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职安通 - 员工详情</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <style>
+        .nav-tabs .nav-link {
+            color: #64748b;
+            font-weight: 600;
+            border: none;
+            padding: 0.75rem 1.25rem;
+        }
+        .nav-tabs .nav-link.active {
+            color: #0073e6;
+            border-bottom: 3px solid #0073e6;
+            background: transparent;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #004080 0%, #00509e 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    
+
+        <nav id="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-shield-halved me-2"></i> 职安通</div>
+        <div class="nav flex-column mt-4">
+            <a href="/portal-empresa/home" class="nav-link"><i class="fa-solid fa-house"></i> 首页</a>
+            <a href="/portal-empresa/funcionarios" class="nav-link active"><i class="fa-solid fa-users"></i> 员工管理</a>
+            <a href="/portal-empresa" class="nav-link"><i class="fa-solid fa-file-medical"></i> 病假条管理</a>
+            <a href="/portal-exames" class="nav-link"><i class="fa-solid fa-stethoscope"></i> 体检管理</a>
+            <a href="/portal-equipamentos" class="nav-link"><i class="fa-solid fa-helmet-safety"></i> 劳保管理</a>
+            <a href="/portal-empresa/riscos" class="nav-link"><i class="fa-solid fa-chart-line"></i> 职业风险评估</a>
+            <div class="mt-auto pb-4"><a href="/logout" class="nav-link text-danger"><i class="fa-solid fa-right-from-bracket"></i> 退出系统</a></div>
+        </div>
+    </nav>
+
+
+    <div id="content">
+        <div class="top-bar">
+            <div>
+                <h2 class="fw-bold mb-0">员工详情</h2>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/portal-empresa/funcionarios" class="btn btn-outline-secondary rounded-pill">
+                    <i class="fa-solid fa-arrow-left me-2"></i> 返回列表
+                </a>
+            </div>
+        </div>
+
+        <!-- 员工信息头部 -->
+        <div class="profile-header mb-4">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="rounded-circle bg-white p-3 d-inline-block">
+                        <img th:src="'https://ui-avatars.com/api/?name=' + ${funcionario.nome} + '&background=004080&color=fff&size=80'" class="rounded-circle" width="80" alt="Avatar">
+                    </div>
+                </div>
+                <div class="col">
+                    <h3 class="fw-bold mb-1" th:text="${funcionario.nome}">员工姓名</h3>
+                    <p class="mb-0 text-white-50">
+                        <i class="fa-solid fa-envelope me-2"></i><span th:text="${funcionario.email}">email</span>
+                    </p>
+                </div>
+                <div class="col-auto">
+                    <div class="row g-3 text-center">
+                        <div class="col">
+                            <div class="h4 fw-bold mb-0" th:text="${totalAtestados}">0</div>
+                            <small class="text-white-50">病假条</small>
+                        </div>
+                        <div class="col">
+                            <div class="h4 fw-bold mb-0" th:text="${totalDiasAfastamento}">0</div>
+                            <small class="text-white-50">缺勤天数</small>
+                        </div>
+                        <div class="col">
+                            <div class="h4 fw-bold mb-0" th:text="${totalExames}">0</div>
+                            <small class="text-white-50">体检</small>
+                        </div>
+                        <div class="col">
+                            <div class="h4 fw-bold mb-0" th:text="${totalEquipamentos}">0</div>
+                            <small class="text-white-50">劳保</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="detailTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-atestados" type="button">
+                    <i class="fa-solid fa-file-medical me-2"></i>病假条记录 <span class="badge bg-secondary ms-1" th:text="${totalAtestados}">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-exames" type="button">
+                    <i class="fa-solid fa-stethoscope me-2"></i>体检记录 <span class="badge bg-secondary ms-1" th:text="${totalExames}">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-equipamentos" type="button">
+                    <i class="fa-solid fa-helmet-safety me-2"></i>劳保用品 <span class="badge bg-secondary ms-1" th:text="${totalEquipamentos}">0</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- 病假条 Tab -->
+            <div class="tab-pane fade show active" id="tab-atestados">
+                <div class="table-container table-responsive">
+                    <table class="table table-hover align-middle mt-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">编号</th>
+                                <th class="text-center">提交日期</th>
+                                <th class="text-center">CID</th>
+                                <th class="text-center">执业证号</th>
+                                <th class="text-center">请假天数</th>
+                                <th>诊断摘要</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center">附件</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="a : ${atestados}">
+                                <td class="text-muted fw-bold text-center" th:text="${'#' + a.id}">#1</td>
+                                <td class="text-center" th:text="${#temporals.format(a.dataEnvio, 'yyyy/MM/dd')}">2026/01/01</td>
+                                <td class="text-center"><span class="badge bg-secondary" th:text="${a.cid}">CID</span></td>
+                                <td class="text-center"><span class="badge bg-light text-dark border" th:text="${a.crm}">执业证号</span></td>
+                                <td class="text-center">
+                                    <span th:text="${a.diasAfastamento + ' 天'}"
+                                          th:class="${a.diasAfastamento > 15 ? 'text-danger fw-bold' : ''}">0 天</span>
+                                    <span th:if="${a.diasAfastamento > 15}" class="badge bg-danger ms-1">劳鉴</span>
+                                </td>
+                                <td><small th:text="${a.resumoDiagnostico}" class="text-muted">--</small></td>
+                                <td class="text-center">
+                                    <span th:switch="${a.status?.name()}">
+                                        <span th:case="'PENDENTE'" class="status-badge bg-pending">待审核</span>
+                                        <span th:case="'APROVADO'" class="status-badge bg-approved">已通过</span>
+                                        <span th:case="'RECUSADO'" class="status-badge bg-danger-custom">已拒绝</span>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:if="${a.nomeArquivo != null}" th:href="@{/atestado/arquivo/{nome}(nome=${a.nomeArquivo})}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-image"></i>
+                                    </a>
+                                    <span th:if="${a.nomeArquivo == null}" class="text-muted small">--</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(atestados)}">
+                                <td colspan="8" class="text-center text-muted py-4">该员工暂无病假条记录。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 体检 Tab -->
+            <div class="tab-pane fade" id="tab-exames">
+                <div class="table-container table-responsive">
+                    <table class="table table-hover align-middle mt-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">编号</th>
+                                <th class="text-center">体检类型</th>
+                                <th class="text-center">预约日期</th>
+                                <th class="text-center">完成日期</th>
+                                <th class="text-center">诊所</th>
+                                <th class="text-center">执业证号</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center">报告</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="e : ${exames}">
+                                <td class="text-muted fw-bold text-center" th:text="${'#' + e.id}">#1</td>
+                                <td class="text-center">
+                                    <span th:switch="${e.tipoExame?.name()}">
+                                        <span th:case="'ADMISSIONAL'" class="badge bg-primary">入职</span>
+                                        <span th:case="'PERIODICO'" class="badge bg-info">定期</span>
+                                        <span th:case="'DEMISSIONAL'" class="badge bg-warning">离职</span>
+                                        <span th:case="'RETORNO_AO_TRABALHO'" class="badge bg-secondary">返岗</span>
+                                    </span>
+                                </td>
+                                <td class="text-center" th:text="${#temporals.format(e.dataAgendamento, 'yyyy/MM/dd')}">--</td>
+                                <td class="text-center">
+                                    <span th:if="${e.dataRealizacao != null}" th:text="${#temporals.format(e.dataRealizacao, 'yyyy/MM/dd')}">--</span>
+                                    <span th:if="${e.dataRealizacao == null}" class="text-muted">--</span>
+                                </td>
+                                <td class="text-center" th:text="${e.clinica}">--</td>
+                                <td class="text-center"><span class="badge bg-light text-dark border" th:text="${e.crmMedico ?: '--'}">--</span></td>
+                                <td class="text-center">
+                                    <span th:switch="${e.status?.name()}">
+                                        <span th:case="'AGENDADO'" class="status-badge bg-pending">已预约</span>
+                                        <span th:case="'REALIZADO'" class="badge bg-info">已完成</span>
+                                        <span th:case="'APTO'" class="status-badge bg-approved">合格</span>
+                                        <span th:case="'INAPTO'" class="status-badge bg-danger-custom">不合格</span>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:if="${e.nomeArquivo != null}" th:href="@{/exame/arquivo/{nome}(nome=${e.nomeArquivo})}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a>
+                                    <span th:if="${e.nomeArquivo == null}" class="text-muted small">--</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(exames)}">
+                                <td colspan="8" class="text-center text-muted py-4">该员工暂无体检记录。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 劳保 Tab -->
+            <div class="tab-pane fade" id="tab-equipamentos">
+                <div class="table-container table-responsive">
+                    <table class="table table-hover align-middle mt-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">编号</th>
+                                <th class="text-center">用品类型</th>
+                                <th class="text-center">规格/型号</th>
+                                <th class="text-center">数量</th>
+                                <th class="text-center">发放日期</th>
+                                <th class="text-center">有效期至</th>
+                                <th class="text-center">状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="epi : ${equipamentos}">
+                                <td class="text-muted fw-bold text-center" th:text="${'#' + epi.id}">#1</td>
+                                <td class="text-center">
+                                    <span th:switch="${epi.tipo?.name()}">
+                                        <span th:case="'CAPACETE'"><i class="fa-solid fa-hard-hat me-1"></i>安全帽</span>
+                                        <span th:case="'LUVAS'"><i class="fa-solid fa-mitten me-1"></i>手套</span>
+                                        <span th:case="'BOTAS'"><i class="fa-solid fa-shoe-prints me-1"></i>安全靴</span>
+                                        <span th:case="'OCULOS'"><i class="fa-solid fa-glasses me-1"></i>护目镜</span>
+                                        <span th:case="'PROTETOR_AURICULAR'"><i class="fa-solid fa-ear-listen me-1"></i>护耳器</span>
+                                        <span th:case="'MASCARA'"><i class="fa-solid fa-mask-face me-1"></i>口罩</span>
+                                        <span th:case="'CINTO_SEGURANCA'"><i class="fa-solid fa-vest me-1"></i>安全带</span>
+                                        <span th:case="'UNIFORME'"><i class="fa-solid fa-shirt me-1"></i>工装</span>
+                                    </span>
+                                </td>
+                                <td class="text-center" th:text="${epi.especificacao}">--</td>
+                                <td class="text-center" th:text="${epi.quantidade}">1</td>
+                                <td class="text-center" th:text="${#temporals.format(epi.dataEntrega, 'yyyy/MM/dd')}">--</td>
+                                <td class="text-center">
+                                    <span th:if="${epi.dataValidade != null}" th:text="${#temporals.format(epi.dataValidade, 'yyyy/MM/dd')}"
+                                          th:class="${epi.dataValidade.isBefore(T(java.time.LocalDate).now()) ? 'text-danger fw-bold' : ''}">--</span>
+                                    <span th:if="${epi.dataValidade == null}" class="text-muted">--</span>
+                                </td>
+                                <td class="text-center">
+                                    <span th:switch="${epi.status?.name()}">
+                                        <span th:case="'ENTREGUE'" class="status-badge bg-pending">待签收</span>
+                                        <span th:case="'EM_USO'" class="status-badge bg-approved">使用中</span>
+                                        <span th:case="'DEVOLVIDO'" class="badge bg-warning text-dark">待处理</span>
+                                        <span th:case="'VENCIDO'" class="status-badge bg-danger-custom">已过期</span>
+                                        <span th:case="'RESOLVIDO'" class="badge bg-secondary">已处理</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(equipamentos)}">
+                                <td colspan="7" class="text-center text-muted py-4">该员工暂无劳保用品记录。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+/* 文件: src/main/resources/static/css/colaborador.css */
+
+:root {
+    --zat-navy: #004080;
+    --zat-blue: #0073e6;
+    --bg-light: #f4f7f9;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--bg-light);
+}
+
+h1, h2, h3, h4, .navbar-brand {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* 自定义导航栏 */
+.navbar-custom {
+    background-color: var(--zat-navy);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* 欢迎区域 */
+.welcome-section {
+    background: linear-gradient(135deg, var(--zat-navy) 0%, var(--zat-blue) 100%);
+    color: white;
+    padding: 3rem 0 5rem 0;
+    margin-bottom: -3rem;
+}
+
+/* 服务卡片 */
+.service-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.service-card.active-module {
+    border-color: var(--zat-blue);
+    transform: translateY(-5px);
+}
+
+.service-card.active-module:hover {
+    box-shadow: 0 10px 25px rgba(0, 115, 230, 0.15);
+}
+
+.service-card.inactive-module {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #f8fafc;
+}
+
+.icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem auto;
+}
+
+.active-module .icon-wrapper {
+    background-color: rgba(0, 115, 230, 0.1);
+    color: var(--zat-blue);
+}
+
+.inactive-module .icon-wrapper {
+    background-color: #e2e8f0;
+    color: #64748b;
+}
+
+.btn-custom {
+    background-color: var(--zat-blue);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    transition: 0.2s;
+}
+
+.btn-custom:hover {
+    background-color: var(--zat-navy);
+    color: white;
+}
